@@ -1,2 +1,0 @@
-# MechFinder
-First group project
