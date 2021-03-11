@@ -1,1 +1,44 @@
-H E L L O, W O R L D!
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>MECHFINDER</title>
+
+    <style>
+      #latitude_id {
+        display: none;
+      }
+      #longitude_id {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    {{ map|safe }}
+    <form id="lat_lon_form" action="" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <button onclick="getLocation()" name="button">Try it</button>
+    </form>
+
+
+
+    <script>
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+      }
+
+      function showPosition(position) {
+        document.getElementById('latitude_id').value = position.coords.latitude;
+        document.getElementById('longitude_id').value = position.coords.longitude;
+
+        document.getElementById("lat_lon_form").submit();
+
+      }
+    </script>
+  </body>
+</html>
