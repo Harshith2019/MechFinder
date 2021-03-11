@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'channels',
 
     'mechanic',
+    'customer',
 ]
 
 MIDDLEWARE = [

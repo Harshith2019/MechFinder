@@ -30,7 +30,7 @@
     </form>
 
     <script type="text/javascript">
-      var socket = new WebSocket('ws://localhost:8000/ws/some_url/');
+      var socket = new WebSocket('ws://localhost:8000/ws/mechanic_dashboard_url/');
       var data;
       socket.onmessage = function(event) {
         data = JSON.parse(event.data);
