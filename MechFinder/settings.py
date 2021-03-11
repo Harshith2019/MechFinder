@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Mechanic',
+    'channels',
+
+    'mechanic',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +73,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'MechFinder.wsgi.application'
+ASGI_APPLICATION = 'MechFinder.asgi.application'
 
 
 # Database
