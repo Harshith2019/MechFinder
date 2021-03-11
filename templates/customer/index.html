@@ -2,6 +2,11 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <title>MECHFINDER</title>
 
     <style>
@@ -11,15 +16,28 @@
       #longitude_id {
         display: none;
       }
+      #name_AskHelpForm {
+        display: none;
+      }
+      #email_AskHelpForm {
+        display: none;
+      }
+      #contact_no_AskHelpForm {
+        display: none;
+      }
     </style>
   </head>
   <body>
-    {{ map|safe }}
-    <form id="lat_lon_form" action="" method="post">
-      {% csrf_token %}
-      {{ form }}
-      <button onclick="getLocation()" name="button">Try it</button>
-    </form>
+    <div class="container">
+      {{ map|safe }}
+
+      <form id="lat_lon_form" action="" method="post">
+        {% csrf_token %}
+        {{ form }}
+        {{ ask_help_form.as_p }}
+        <button class="btn btn-outline-success" onclick="getLocation()" name="button">Send Request</button>
+      </form>
+    </div>
 
 
 

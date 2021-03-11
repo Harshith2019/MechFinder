@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import LocationModelForm
+from .forms import LocationModelForm, AskHelpForm
 import folium
 
 # Create your views here.
@@ -7,6 +7,10 @@ import folium
 def index(request):
 
     form = LocationModelForm(request.POST or None)
+    ask_help_form = AskHelpForm(request.POST or None)
+
+    if ask_help_form.is_valid():
+        pass
 
     # initial values
     # l_lat = '33.8688'
@@ -37,10 +41,12 @@ def index(request):
     if m:
         context = {
             'form': form,
-            'map': m
+            'ask_help_form': ask_help_form,
+            'map': m,
         }
     else:
         context = {
             'form': form,
+            'ask_help_form': ask_help_form,
         }
     return render(request, 'customer/index.html', context)
