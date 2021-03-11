@@ -21,7 +21,7 @@
   </head>
   <body onload="check_for_googlemaps()">
     <div class="container">
-      <h5 id="dashboard"></h5>
+      <div id="dashboard"></div>
     </div>
 
     <form id="direction_form" action="" method="post">
@@ -39,7 +39,7 @@
         var content = ""
         var i
         for (i = data.message.length-1; i >= 0; i--) {
-          content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + data.message[i].name + " | " + data.message[i].email + '<br><br><button style="margin-right: 7px; border-radius: 0;" type="button" class="btn btn-outline-success" onClick="accept_click()" id=' + i.toString() + '>Accept</button>' + '<button  style="margin-left: 7px; border-radius: 0;" type="button" class="btn btn-outline-success direction-button" onClick="directions_click()" id=' +  i.toString() + '>Get Directions</button>' + "</div>"
+          content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + '<h5>' + data.message[i].name + " | " + data.message[i].email + '</h5>' + '<br>' + data.message[i].description + '<br>' + '+91 ' + data.message[i].contact_no + '<br><br><button style="margin-right: 7px; border-radius: 0;" type="button" class="btn btn-outline-success" onClick="accept_click()" id=' + i.toString() + '>Accept</button>' + '<button  style="margin-left: 7px; border-radius: 0;" type="button" class="btn btn-outline-success direction-button" onClick="directions_click()" id=' +  i.toString() + '>Get Directions</button>' + "</div>"
         }
 
         document.querySelector('#dashboard').innerHTML = content;

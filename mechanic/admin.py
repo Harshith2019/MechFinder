@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import users
+from .models import need_help
 # Register your models here.
 
-admin.site.register(users)
+admin.site.register(need_help)

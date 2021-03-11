@@ -1,5 +1,5 @@
 import json
-from .models import users
+from .models import need_help
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
@@ -15,7 +15,7 @@ class WSConsumer(WebsocketConsumer):
 
         instances.append(self)
 
-        self.send(json.dumps({'message': users.get_all_objects(users)}))
+        self.send(json.dumps({'message': need_help.get_all_objects(need_help)}))
 
     def disconnect(self, close_code):
 
@@ -26,10 +26,10 @@ class WSConsumer(WebsocketConsumer):
         self.close()
 
 
-@receiver(post_save, sender=users)
-@receiver(post_delete, sender=users)
+@receiver(post_save, sender=need_help)
+@receiver(post_delete, sender=need_help)
 def get_model_objects(sender, **kwargs):
-    print(users.get_all_objects(users))
+    print(need_help.get_all_objects(need_help))
 
     for instance in instances:
-        instance.send(json.dumps({'message': users.get_all_objects(users)}))
+        instance.send(json.dumps({'message': need_help.get_all_objects(need_help)}))
