@@ -1,0 +1,15 @@
+
+<center>
+<h1>signup</h1>
+
+
+<form method="POST" action="">
+  {% csrf_token %}
+  <p>Username : {{ form.username }}</p>
+  <p>Password : {{ form.password1 }}</p>
+  <p>Confirm password : {{ form.password2 }}</p>
+  <p>{{ form.mech_or_cust }} Check if you are a mechanic</p>
+  <button type="submit">Sign Up</button>
+</form>
+
+</center>
