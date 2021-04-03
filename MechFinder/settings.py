@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'channels',
-
     'mechanic',
     'customer',
+    'home',
 ]
 
 MIDDLEWARE = [
@@ -123,5 +123,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
+#MEDIA_ROOT = BASE_DIR / 'media'
+
+LOGIN_URL = '/login'

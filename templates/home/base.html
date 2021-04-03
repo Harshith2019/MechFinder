@@ -1,0 +1,29 @@
+
+{% if user.is_authenticated %}
+<p>Logged in as {{ user.username }}</p>
+
+<h2><a href="{% url 'editProfile' %}">Edit Profile</a></h2>
+
+<form action="{% url 'logoutuser' %}" method="POST" id="logoutform">
+  {% csrf_token %}
+<button  onclick="funclogout()">Logout</button>
+</form>
+
+{% else %}
+<a href="{% url 'signupuser' %}">SignUp</a>
+<a href="{% url 'loginuser' %}">Login</a>
+
+{% endif %}
+
+<br><br>
+
+{% block content %}
+{% endblock %}
+
+
+<script type="text/javascript">
+  function funclogout(){
+    document.getElementById('logoutform').submit()
+  }
+
+</script>

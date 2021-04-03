@@ -1,4 +1,4 @@
-"""MechFinder URL Configuration
+"""mechcheck URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -15,9 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from home import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('mechanic/', include('mechanic.urls')),
     path('customer/', include('customer.urls')),
+
+    path('', views.home, name="home"),
+    path('signup', views.signupuser, name="signupuser"),
+    # path('customer', views.customer, name="customer"),
+    path('login', views.loginuser, name="loginuser"),
+    path('logout', views.logoutuser, name="logoutuser"),
+    path('edit', views.editProfile, name="editProfile"),
 ]
