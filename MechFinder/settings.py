@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
+    'mechanic',
+    'customer',
     'home',
 ]
 
@@ -71,6 +74,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'MechFinder.wsgi.application'
+ASGI_APPLICATION = 'MechFinder.asgi.application'
 
 
 # Database

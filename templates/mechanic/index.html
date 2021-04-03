@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <title>MECHFINDER | Dashboard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <style media="screen">
+      #dashboard {
+        padding-top: 60px;
+      }
+      #direction_form {
+        display: none;
+      }
+    </style>
+  </head>
+  <body onload="check_for_googlemaps()">
+    <div class="container">
+      <div id="dashboard"></div>
+    </div>
+
+    <form id="direction_form" action="" method="post">
+        {% csrf_token %}
+        {{ direction_form }}
+    </form>
+
+    <script type="text/javascript">
+      var socket = new WebSocket('ws://localhost:8000/ws/mechanic_dashboard_url/');
+      var data;
+      socket.onmessage = function(event) {
+        data = JSON.parse(event.data);
+        console.log(data);
+
+        var content = ""
+        var i
+        for (i = data.message.length-1; i >= 0; i--) {
+          content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + '<h5>' + data.message[i].name + " | " + data.message[i].email + '</h5>' + '<br>' + data.message[i].description + '<br>' + '+91 ' + data.message[i].contact_no + '<br><br><button style="margin-right: 7px; border-radius: 0;" type="button" class="btn btn-outline-success" onClick="accept_click()" id=' + i.toString() + '>Accept</button>' + '<button  style="margin-left: 7px; border-radius: 0;" type="button" class="btn btn-outline-success direction-button" onClick="directions_click()" id=' +  i.toString() + '>Get Directions</button>' + "</div>"
+        }
+
+        document.querySelector('#dashboard').innerHTML = content;
+
+      }
+      socket.onclose = function(){
+        console.log('closed!');
+        //reconnect now
+      }
+
+      function accept_click()
+      {
+          // event.target is the element that is clicked (button in this case).
+          console.log(event.target.id);
+          console.log(data.message[parseInt(event.target.id)].name);
+          console.log(data.message[parseInt(event.target.id)].email);
+      }
+
+      function directions_click()
+      {
+          // event.target is the element that is clicked (button in this case).
+          console.log(event.target.id);
+          console.log(data.message[parseInt(event.target.id)].name);
+          console.log(data.message[parseInt(event.target.id)].email);
+
+
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          } else {
+              alert("Geolocation is not supported by this browser.");
+          }
+
+          function showPosition(position) {
+            document.getElementById('m_lat').value = position.coords.latitude;
+            document.getElementById('m_lon').value = position.coords.longitude;
+            document.getElementById('c_lat').value = '11.004556';
+            document.getElementById('c_lon').value = '76.961632';
+
+            document.getElementById("direction_form").submit();
+
+          }
+
+      }
+
+      function check_for_googlemaps() {
+
+        if('{{maps_url}}' != 'None') {
+          window.open(`{{maps_url|safe}}`);
+        }
+
+      }
+
+      var wow = new WOW(
+        {
+          boxClass:     'wow',      // animated element css class (default is wow)
+          animateClass: 'animate__animated', // animation css class (default is animated)
+          offset:       0,          // distance to the element when triggering the animation (default is 0)
+          mobile:       true,       // trigger animations on mobile devices (default is true)
+          live:         true,       // act on asynchronously loaded content (default is true)
+          callback:     function(box) {
+            // the callback is fired every time an animation is started
+            // the argument that is passed in is the DOM node being animated
+          },
+          scrollContainer: null // optional scroll container selector, otherwise use window
+        }
+      );
+      wow.init();
+
+    </script>
+
+
+  </body>
+</html>
