@@ -34,21 +34,26 @@ def signupuser(request):
             if request.POST['password1'] == request.POST['password2']:
                 print(request.POST.get('firstname'),request.POST.get('isMech'),' - wdh3r32')
                 print('in else if',request.POST)
-                try:
-                    user = User.objects.create_user(username=request.POST.get('username'), password=request.POST['password1'])
-                    user.save()
-                    login(request, user)
-                    form = UserProfileForm(request.POST)
+                password = request.POST.get('password1')
+                if any(char.isdigit() for char in password) and any(char.isupper() for char in password) and any(not char.isalnum() for char in password) and len(password)>7:
+                    try:
+                        user = User.objects.create_user(username=request.POST.get('username'), password=request.POST['password1'])
+                        user.save()
+                        login(request, user)
+                        form = UserProfileForm(request.POST)
 
-                    if form.is_valid():
-                        obj = form.save(commit=False)
-                        obj.user = request.user
-                        obj.save()
-                    return redirect('customer')
-                except IntegrityError:
-                    return render(request, 'home/signupuser.html', {'form1':UserCreationForm(), 'form2':UserProfileForm(), 'error':'Username already taken. Please try another username'})
-                except Exception as e:
-                    return render(request, 'home/signupuser.html', {'form1':UserCreationForm(), 'form2':UserProfileForm(), 'error':'Something went wrong! Try Reloading'})
+                        if form.is_valid():
+                            obj = form.save(commit=False)
+                            obj.user = request.user
+                            obj.save()
+                        return redirect('customer')
+                    except IntegrityError:
+                        return render(request, 'home/signupuser.html', {'form1':UserCreationForm(), 'form2':UserProfileForm(), 'error':'Username already taken. Please try another username'})
+                    except Exception as e:
+                        return render(request, 'home/signupuser.html', {'form1':UserCreationForm(), 'form2':UserProfileForm(), 'error':'Something went wrong! Try Reloading'})
+                else:
+                    return render(request, 'home/signupuser.html', {'form1':UserCreationForm(), 'form2':UserProfileForm(), 'error':'Follow conditions to set password'})
+
             else:
                 return render(request, 'home/signupuser.html', {'form1':UserCreationForm(), 'form2':UserProfileForm(), 'error':'Passwords didn\'t match'})
 
