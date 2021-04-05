@@ -15,12 +15,13 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter
 from channels.routing import URLRouter
 
-from mechanic.routing import ws_urlpatterns
+from mechanic.routing import ws_urlpatterns as mechanics_ws_urlpatterns
+# from mechanic.routing import ws_urlpatterns as customer_ws_urlpatterns
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MechFinder.settings')
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
-    'websocket': AuthMiddlewareStack(URLRouter(ws_urlpatterns))
+    'websocket': AuthMiddlewareStack(URLRouter(mechanics_ws_urlpatterns))
 
 })

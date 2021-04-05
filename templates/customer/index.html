@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
     <title>MECHFINDER</title>
 
     <style>
@@ -25,13 +27,18 @@
       #contact_no_AskHelpForm {
         display: none;
       }
+      #userName_AskHelpForm {
+        display: none;
+      }
     </style>
   </head>
   <body>
+
     <div class="container">
+
       {{ map|safe }}
 
-      <form id="lat_lon_form" action="" method="post">
+      <form style="display: {{ display_lat_lon_form }}" id="lat_lon_form" action="" method="post">
         {% csrf_token %}
         {{ form }}
         {{ ask_help_form.as_p }}
@@ -39,9 +46,41 @@
       </form>
     </div>
 
+    <br>
+    <br>
+
+    <div class="container">
+      <div id="customer_help"></div>
+    </div>
 
 
-    <script>
+
+    <script type="text/javascript">
+      var socket = new WebSocket('ws://localhost:8000/ws/customer_help_url/');
+      var data;
+      socket.onmessage = function(event) {
+        data = JSON.parse(event.data);
+        console.log(data);
+
+        var content = ""
+        var i
+        for (i = data.message.length-1; i >= 0; i--) {
+
+          if(data.message[i].customer_name == "{{ userName }}") {
+
+            content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + '<h5>' + data.message[i].mechanic_name + " | " + data.message[i].email + '</h5>' + '<br>' + '<br>' + '+91 ' + data.message[i].contact_no  + "</div>"
+
+          }
+        }
+
+        document.querySelector('#customer_help').innerHTML = content;
+
+      }
+      socket.onclose = function(){
+        console.log('closed!');
+        //reconnect now
+      }
+
       function getLocation() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(showPosition);
@@ -53,10 +92,33 @@
       function showPosition(position) {
         document.getElementById('latitude_id').value = position.coords.latitude;
         document.getElementById('longitude_id').value = position.coords.longitude;
+        document.getElementById('name_AskHelpForm').value = "{{ name }}";
+        document.getElementById('userName_AskHelpForm').value = "{{ userName }}";
+        document.getElementById('email_AskHelpForm').value = "{{ email }}";
+        document.getElementById('contact_no_AskHelpForm').value = "{{ phone }}";
 
         document.getElementById("lat_lon_form").submit();
 
       }
+
+
+      var wow = new WOW(
+        {
+          boxClass:     'wow',      // animated element css class (default is wow)
+          animateClass: 'animate__animated', // animation css class (default is animated)
+          offset:       0,          // distance to the element when triggering the animation (default is 0)
+          mobile:       true,       // trigger animations on mobile devices (default is true)
+          live:         true,       // act on asynchronously loaded content (default is true)
+          callback:     function(box) {
+            // the callback is fired every time an animation is started
+            // the argument that is passed in is the DOM node being animated
+          },
+          scrollContainer: null // optional scroll container selector, otherwise use window
+        }
+      );
+      wow.init();
+
+
     </script>
   </body>
 </html>

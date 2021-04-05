@@ -1,12 +1,43 @@
-from django.shortcuts import render
-from .forms import DirectionForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import DirectionForm, HelpsReceivedForm
 from .utils import get_googlemaps_direction_url
+from django.contrib.auth.models import User
+
+from home.models import UserProfile
+from customer.models import helps_received
+from .models import need_help
+
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required
 def index(request):
 
     direction_form = DirectionForm(request.POST or None)
+
+    if request.method == 'POST' and not direction_form.is_valid():
+        helps_received_instance = helps_received()
+        helps_received_instance.customer_name = request.POST['customer_name']
+        helps_received_instance.mechanic_name = request.POST['mechanic_name']
+        helps_received_instance.email = request.POST['email']
+        helps_received_instance.contact_no = request.POST['contact_no']
+        helps_received_instance.latitude = request.POST['latitude']
+        helps_received_instance.longitude = request.POST['longitude']
+        helps_received_instance.save()
+
+        need_help.objects.get(user_name=request.POST['customer_name']).delete()
+
+        return redirect('pending_order/')
+
+
+    name = get_object_or_404(UserProfile, pk = request.user.id, user=request.user)
+    email = get_object_or_404(UserProfile, pk = request.user.id, user=request.user).email
+    phone = get_object_or_404(UserProfile, pk = request.user.id, user=request.user).phone
+    userName = get_object_or_404(User, pk=request.user.id).username
+
+    direction_form = DirectionForm(request.POST or None)
+    help_form = HelpsReceivedForm(request.POST or None)
     maps_url = None
 
     if direction_form.is_valid():
@@ -23,8 +54,27 @@ def index(request):
 
 
     context = {
+        'name': name,
+        'userName': userName,
+        'email': email,
+        'phone': phone,
         'direction_form': direction_form,
         'maps_url': maps_url,
+        'help_form': help_form,
     }
 
     return render(request, 'mechanic/index.html', context)
+
+@login_required
+def pending_order(request):
+
+    try:
+        pending_requests = helps_received.objects.get(mechanic_name=get_object_or_404(User, pk=request.user.id).username)
+    except:
+        pending_requests = None
+
+    context = {
+        'pending_requests': pending_requests
+    }
+
+    return render(request, 'mechanic/pending_order.html', context)
