@@ -74,6 +74,7 @@ def index(request):
             'map': m,
             'display_lat_lon_form': 'none',
         }
+
     else:
         context = {
             'name': name,
@@ -84,4 +85,5 @@ def index(request):
             'ask_help_form': ask_help_form,
             'display_lat_lon_form': 'block',
         }
+
     return render(request, 'customer/index.html', context)

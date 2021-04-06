@@ -39,7 +39,12 @@ def index(request):
         helps_received_instance.customer_longitude = request.POST['customer_longitude']
         helps_received_instance.save()
 
-        need_help.objects.get(user_name=request.POST['customer_name']).delete()
+        # incase the customer was able to give more than one request, delete remaing too
+        request_obj_count = need_help.objects.filter(user_name=request.POST['customer_name']).count()
+        if request_obj_count > 0:
+            for i in range(0, request_obj_count):
+                request_obj =  need_help.objects.filter(user_name=request.POST['customer_name']).first()
+                request_obj.delete()
 
         return redirect('pending_order/')
 
