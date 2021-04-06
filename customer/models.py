@@ -18,7 +18,7 @@ class helps_received(models.Model):
     customer_email = models.CharField(max_length=200)
     contact_no = models.CharField(max_length=50)
     customer_contact_no = models.CharField(max_length=50)
-    customer_description = models.CharField(max_length=200)
+    customer_description = models.CharField(max_length=1000)
     latitude = models.CharField(max_length=200)
     longitude = models.CharField(max_length=200)
     customer_latitude = models.CharField(max_length=200)
