@@ -93,6 +93,12 @@ def index(request):
 
 @login_required
 def pending_order(request):
+    try:
+        user_obj = get_object_or_404(UserProfile, pk = request.user.id, user=request.user)
+        if not user_obj.isMech:
+            return redirect('/customer')
+    except:
+        return redirect('/mechanic')    
 
     try:
         pending_requests = helps_received.objects.get(mechanic_name=get_object_or_404(User, pk=request.user.id).username)
