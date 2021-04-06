@@ -68,7 +68,11 @@
           document.getElementById('customer_name_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].user_name;
           document.getElementById('mechanic_name_HelpsReceivedForm').value = "{{ userName }}";
           document.getElementById('email_HelpsReceivedForm').value = "{{ email }}";
+          document.getElementById('customer_email_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].email;
           document.getElementById('contact_no_HelpsReceivedForm').value = "{{ phone }}";
+          document.getElementById('customer_contact_no_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].contact_no;
+          document.getElementById('customer_latitude_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].latitude;
+          document.getElementById('customer_longitude_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].longitude;
 
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);

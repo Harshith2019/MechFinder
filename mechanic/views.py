@@ -14,16 +14,29 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def index(request):
 
+    try:
+        pending_requests = helps_received.objects.get(mechanic_name=get_object_or_404(User, pk=request.user.id).username)
+        return redirect('pending_order/')
+        print('------>   Having pending orders!')
+    except:
+        pending_requests = None
+        print('------>   No pending orders!')
+
     direction_form = DirectionForm(request.POST or None)
 
     if request.method == 'POST' and not direction_form.is_valid():
+        print(request.POST)
         helps_received_instance = helps_received()
         helps_received_instance.customer_name = request.POST['customer_name']
         helps_received_instance.mechanic_name = request.POST['mechanic_name']
         helps_received_instance.email = request.POST['email']
+        helps_received_instance.customer_email = request.POST['customer_email']
         helps_received_instance.contact_no = request.POST['contact_no']
+        helps_received_instance.customer_contact_no = request.POST['customer_contact_no']
         helps_received_instance.latitude = request.POST['latitude']
         helps_received_instance.longitude = request.POST['longitude']
+        helps_received_instance.customer_latitude = request.POST['customer_latitude']
+        helps_received_instance.customer_longitude = request.POST['customer_longitude']
         helps_received_instance.save()
 
         need_help.objects.get(user_name=request.POST['customer_name']).delete()
