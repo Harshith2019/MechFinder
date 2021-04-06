@@ -14,6 +14,14 @@ import folium
 @login_required
 def index(request):
 
+    display_cancel_btn = 'none'
+    try:
+        obj_count = need_help.objects.filter(user_name=request.user.username).count()
+        if obj_count > 0:
+            display_cancel_btn = 'block'
+    except:
+        display_cancel_btn = 'none'
+
     if request.method == 'POST':
         need_help_instance = need_help()
         need_help_instance.name = request.POST['name']
@@ -126,6 +134,7 @@ def index(request):
             'ask_help_form': ask_help_form,
             'map': m,
             'display_lat_lon_form': 'none',
+            'display_cancel_btn': display_cancel_btn
         }
 
     else:
@@ -137,6 +146,7 @@ def index(request):
             'form': form,
             'ask_help_form': ask_help_form,
             'display_lat_lon_form': 'block',
+            'display_cancel_btn': display_cancel_btn
         }
 
     return render(request, 'customer/index.html', context)
