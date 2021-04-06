@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import DirectionForm, HelpsReceivedForm
+from .forms import DirectionForm, HelpsReceivedForm, CancelOrderForm
 from .utils import get_googlemaps_direction_url
 from django.contrib.auth.models import User
 
@@ -119,12 +119,37 @@ def pending_order(request):
         c_lon = float(direction_form.cleaned_data.get('c_lon'))
         maps_url = str(get_googlemaps_direction_url(m_lat, m_lon, c_lat, c_lon))
 
+    cancel_order_form = CancelOrderForm(request.POST or None)
+
+    if cancel_order_form.is_valid():
+        print(request.POST)
+
+
+        need_help_instance = need_help()
+        need_help_instance.name = request.POST['customer_name']
+        need_help_instance.user_name = request.POST['customer_name']
+        need_help_instance.email = request.POST['customer_email']
+        need_help_instance.description = request.POST['customer_description']
+        need_help_instance.contact_no = request.POST['customer_contact_no']
+        need_help_instance.latitude = request.POST['customer_latitude']
+        need_help_instance.longitude = request.POST['customer_longitude']
+        need_help_instance.save()
+
+
+    try:
+        customer_obj = helps_received.objects.filter(customer_name=request.POST['customer_name']).first()
+        customer_obj.delete()
+        return redirect('/mechanic')
+    except:
+        customer_obj = None
+
 
     context = {
         'pending_requests': pending_requests,
         'map': m,
         'direction_form': direction_form,
         'maps_url': maps_url,
+        'cancel_order_form': cancel_order_form
     }
 
     return render(request, 'mechanic/pending_order.html', context)

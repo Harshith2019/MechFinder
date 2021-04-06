@@ -27,6 +27,9 @@
     #direction_form {
       display: none;
     }
+    #cancel_order_form {
+      display: none;
+    }
   </style>
 
   </head>
@@ -34,6 +37,10 @@
     <form id="direction_form" action="" method="post">
         {% csrf_token %}
         {{ direction_form }}
+    </form>
+    <form id="cancel_order_form" action="" method="post">
+        {% csrf_token %}
+        {{ cancel_order_form }}
     </form>
 
     <div class="container">
@@ -81,7 +88,22 @@
 
     }
 
+    function cancel_order()
+    {
+      document.getElementById('customer_name_CancelOrderForm').value = '{{ pending_requests.customer_name }}';
+      document.getElementById('mechanic_name_CancelOrderForm').value = '{{ pending_requests.mechanic_name }}';
+      document.getElementById('email_CancelOrderForm').value = '{{ pending_requests.email }}';
+      document.getElementById('customer_email_CancelOrderForm').value = '{{ pending_requests.customer_email }}';
+      document.getElementById('contact_no_CancelOrderForm').value = '{{ pending_requests.contact_no }}';
+      document.getElementById('customer_contact_no_CancelOrderForm').value = '{{ pending_requests.customer_contact_no }}';
+      document.getElementById('customer_description_CancelOrderForm').value = '{{ pending_requests.customer_description }}';
+      document.getElementById('latitude_CancelOrderForm').value = '{{ pending_requests.latitude }}';
+      document.getElementById('longitude_CancelOrderForm').value = '{{ pending_requests.longitude }}';
+      document.getElementById('customer_latitude_CancelOrderForm').value = '{{ pending_requests.customer_latitude }}';
+      document.getElementById('customer_longitude_CancelOrderForm').value = '{{ pending_requests.customer_longitude }}';
 
+      document.getElementById('cancel_order_form').submit()
+    }
 
 
 
