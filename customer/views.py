@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 from home.models import UserProfile
 from mechanic.models import need_help
-from .models import Location
+from .models import Location, helps_received
 
 from django.contrib.auth.decorators import login_required
 from .forms import LocationModelForm, AskHelpForm
@@ -25,7 +25,7 @@ def index(request):
         need_help_instance.longitude = request.POST['longitude']
         need_help_instance.save()
 
-    print("----->   ", request.user)
+    print("----->   ", request.user.username)
     print("----->   ", request.user.id)
 
 
@@ -47,6 +47,23 @@ def index(request):
     m = None
 
     if form.is_valid():
+
+        try:
+            user_location_obj = Location.objects.filter(user_name=request.user.username).first()
+        except:
+            user_location_obj = None
+
+        if not user_location_obj:
+            location_instance = Location()
+            location_instance.user_name = request.user.username
+            location_instance.latitude = form.cleaned_data.get('latitude')
+            location_instance.longitude = form.cleaned_data.get('longitude')
+            location_instance.save()
+        else:
+            user_location_obj.latitude = form.cleaned_data.get('latitude')
+            user_location_obj.longitude = form.cleaned_data.get('longitude')
+            user_location_obj.save()
+
         instance = form.save(commit=False)
         instance.latitude = form.cleaned_data.get('latitude')
         instance.longitude = form.cleaned_data.get('longitude')
@@ -63,7 +80,43 @@ def index(request):
 
         m = m._repr_html_()
 
-    if m:
+    is_any_request_sent = False
+    try:
+        current_requests = helps_received.objects.filter(customer_name=request.user.username).count()
+        if current_requests > 0:
+            is_any_request_sent = True
+        print('is_any_request_sent: ', is_any_request_sent, current_requests)
+    except:
+        current_requests = None
+        is_any_request_sent = False
+        print('is_any_request_sent: ', is_any_request_sent, current_requests)
+
+    if not is_any_request_sent:
+        try:
+            current_requests = need_help.objects.filter(user_name=request.user.username).count()
+            if current_requests > 0:
+                is_any_request_sent = True
+            print('is_any_request_sent: ', is_any_request_sent, current_requests)
+        except:
+            current_requests = None
+            is_any_request_sent = False
+            print('is_any_request_sent: ', is_any_request_sent, current_requests)
+
+
+    if m or is_any_request_sent:
+        try:
+            user_location_obj = Location.objects.filter(user_name=request.user.username).first()
+        except:
+            user_location_obj = None
+
+        if not m and user_location_obj:
+            l_lat = user_location_obj.latitude
+            l_lon = user_location_obj.longitude
+            m = folium.Map(width=800, height=500, location=[l_lat, l_lon], zoom_start=8)
+            folium.Marker([l_lat, l_lon], tooltip="click here for more info", popup=[l_lat, l_lon],
+                            icon=folium.Icon(color='purple')).add_to(m)
+            m = m._repr_html_()
+
         context = {
             'name': name,
             'userName': userName,

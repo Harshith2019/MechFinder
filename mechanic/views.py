@@ -8,6 +8,7 @@ from customer.models import helps_received
 from .models import need_help
 
 from django.contrib.auth.decorators import login_required
+import folium
 
 # Create your views here.
 
@@ -33,6 +34,7 @@ def index(request):
         helps_received_instance.customer_email = request.POST['customer_email']
         helps_received_instance.contact_no = request.POST['contact_no']
         helps_received_instance.customer_contact_no = request.POST['customer_contact_no']
+        helps_received_instance.customer_description = request.POST['customer_description']
         helps_received_instance.latitude = request.POST['latitude']
         helps_received_instance.longitude = request.POST['longitude']
         helps_received_instance.customer_latitude = request.POST['customer_latitude']
@@ -91,8 +93,38 @@ def pending_order(request):
     except:
         pending_requests = None
 
+    m = None
+    maps_url = None
+
+    if pending_requests:
+        o_lat = pending_requests.latitude
+        o_lon = pending_requests.longitude
+        d_lat = pending_requests.customer_latitude
+        d_lon = pending_requests.customer_longitude
+
+        m = folium.Map(width=800, height=500, location=[d_lat, d_lon], zoom_start=8)
+
+        folium.Marker([d_lat, d_lon], tooltip="customer's current location", popup=[d_lat, d_lon],
+                        icon=folium.Icon(color='red')).add_to(m)
+        folium.Marker([o_lat, o_lon], tooltip="your location", popup=[o_lat, o_lon],
+                        icon=folium.Icon(color='purple')).add_to(m)
+        m = m._repr_html_()
+
+
+    direction_form = DirectionForm(request.POST or None)
+    if direction_form.is_valid():
+        m_lat = float(direction_form.cleaned_data.get('m_lat'))
+        m_lon = float(direction_form.cleaned_data.get('m_lon'))
+        c_lat = float(direction_form.cleaned_data.get('c_lat'))
+        c_lon = float(direction_form.cleaned_data.get('c_lon'))
+        maps_url = str(get_googlemaps_direction_url(m_lat, m_lon, c_lat, c_lon))
+
+
     context = {
-        'pending_requests': pending_requests
+        'pending_requests': pending_requests,
+        'map': m,
+        'direction_form': direction_form,
+        'maps_url': maps_url,
     }
 
     return render(request, 'mechanic/pending_order.html', context)

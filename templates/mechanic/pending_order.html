@@ -1,1 +1,108 @@
-HELLO! {{ pending_requests.customer_email }}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <title>pending orders | MechFinder</title>
+
+  <style>
+    #cancel-btn {
+      margin-right: 7px;
+      border-radius: 0;
+    }
+    #direction-btn {
+      margin-left: 7px;
+      border-radius: 0;
+    }
+    #finish-btn {
+      float: right;
+      border-radius: 0;
+    }
+    #direction_form {
+      display: none;
+    }
+  </style>
+
+  </head>
+  <body onload="check_for_googlemaps()">
+    <form id="direction_form" action="" method="post">
+        {% csrf_token %}
+        {{ direction_form }}
+    </form>
+
+    <div class="container">
+      <div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">
+        <h5>{{ pending_requests.customer_name }} | {{ pending_requests.customer_email }}</h5>
+        {{ pending_requests.customer_description }}
+
+        <br>
+        <br>
+        <p>+91 {{ pending_requests.customer_contact_no }}</p>
+        <button type="button" id="cancel-btn" class="btn btn-outline-danger" onClick="cancel_order()" name="cancel_btnn">Cancel Order</button>
+        <button type="button" id="direction-btn" class="btn btn-outline-success" onClick="get_directions()" name="cancel_btnn">Get Live Directions</button>
+        <button type="button" id="finish-btn" class="btn btn-outline-danger" onClick="finish_order()" name="cancel_btnn">Finish Order</button>
+      </div>
+    </div>
+    <div class="container">
+      {{ map|safe }}
+    </div>
+
+
+  <script type="text/javascript">
+    function get_directions()
+    {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+          alert("Geolocation is not supported by this browser.");
+      }
+
+      function showPosition(position) {
+        document.getElementById('m_lat').value = position.coords.latitude;
+        document.getElementById('m_lon').value = position.coords.longitude;
+        document.getElementById('c_lat').value = '{{ pending_requests.customer_latitude }}';
+        document.getElementById('c_lon').value = '{{ pending_requests.customer_longitude }}';
+
+        document.getElementById("direction_form").submit();
+      }
+    }
+
+    function check_for_googlemaps() {
+
+      if('{{maps_url}}' != 'None') {
+        window.open(`{{maps_url|safe}}`);
+      }
+
+    }
+
+
+
+
+
+
+
+    var wow = new WOW(
+      {
+        boxClass:     'wow',      // animated element css class (default is wow)
+        animateClass: 'animate__animated', // animation css class (default is animated)
+        offset:       0,          // distance to the element when triggering the animation (default is 0)
+        mobile:       true,       // trigger animations on mobile devices (default is true)
+        live:         true,       // act on asynchronously loaded content (default is true)
+        callback:     function(box) {
+          // the callback is fired every time an animation is started
+          // the argument that is passed in is the DOM node being animated
+        },
+        scrollContainer: null // optional scroll container selector, otherwise use window
+      }
+    );
+    wow.init();
+  </script>
+
+  </body>
+</html>

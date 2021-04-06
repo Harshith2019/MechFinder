@@ -13,6 +13,7 @@ class HelpsReceivedForm(forms.Form):
     customer_email = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_email_HelpsReceivedForm'}))
     contact_no = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'contact_no_HelpsReceivedForm'}))
     customer_contact_no = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_contact_no_HelpsReceivedForm'}))
+    customer_description = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_description_HelpsReceivedForm'}))
     latitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'latitude_HelpsReceivedForm'}))
     longitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'longitude_HelpsReceivedForm'}))
     customer_latitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_latitude_HelpsReceivedForm'}))
