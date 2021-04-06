@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 
 from home.models import UserProfile
@@ -13,6 +13,20 @@ import folium
 
 @login_required
 def index(request):
+
+    if request.method == 'POST':
+        try:
+            if request.POST['cancel_request'] == 'YES':
+                try:
+                    obj_count = need_help.objects.filter(user_name=request.user.username).count()
+                    for i in range(0, obj_count):
+                        obj = need_help.objects.filter(user_name=request.user.username).first()
+                        obj.delete()
+                except:
+                    pass
+                return redirect('/customer')
+        except:
+            pass
 
     display_cancel_btn = 'none'
     try:

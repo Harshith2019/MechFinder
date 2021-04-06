@@ -33,9 +33,17 @@
       #cancel-btn {
         border-radius: 0;
       }
+      #cancel_request_form {
+        display: none;
+      }
     </style>
   </head>
   <body>
+    <form id="cancel_request_form" action="" method="post">
+      {% csrf_token %}
+      <label for="cancel_request"></label>
+      <input type="text" name="cancel_request" id="cancel_request">
+    </form>
 
     <div class="container">
 
@@ -69,7 +77,7 @@
         {% if map %}
         document.getElementById("cancel-btn").style.display = 'block';
         {% endif %}
-        
+
         data = JSON.parse(event.data);
         console.log(data);
 
@@ -115,6 +123,11 @@
 
       }
 
+      function cancel_request() {
+        console.log('{{ userName }}');
+        document.getElementById('cancel_request').value = 'YES';
+        document.getElementById('cancel_request_form').submit()
+      }
 
       var wow = new WOW(
         {
