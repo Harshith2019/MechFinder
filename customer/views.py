@@ -13,6 +13,12 @@ import folium
 
 @login_required
 def index(request):
+    try:
+        user_obj = get_object_or_404(UserProfile, pk = request.user.id, user=request.user)
+        if user_obj.isMech:
+            return redirect('/mechanic')
+    except:
+        return redirect('/customer')
 
     if request.method == 'POST':
         try:
