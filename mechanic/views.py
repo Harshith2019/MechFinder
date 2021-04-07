@@ -98,12 +98,13 @@ def pending_order(request):
         if not user_obj.isMech:
             return redirect('/customer')
     except:
-        return redirect('/mechanic')    
+        return redirect('/mechanic')
 
     try:
         pending_requests = helps_received.objects.get(mechanic_name=get_object_or_404(User, pk=request.user.id).username)
     except:
         pending_requests = None
+        return redirect('/mechanic')
 
     m = None
     maps_url = None
