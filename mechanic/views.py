@@ -69,8 +69,10 @@ def index(request):
     if direction_form.is_valid():
         m_lat = float(direction_form.cleaned_data.get('m_lat'))
         m_lon = float(direction_form.cleaned_data.get('m_lon'))
-        c_lat = float(direction_form.cleaned_data.get('c_lat'))
-        c_lon = float(direction_form.cleaned_data.get('c_lon'))
+        # c_lat = float(direction_form.cleaned_data.get('c_lat'))
+        # c_lon = float(direction_form.cleaned_data.get('c_lon'))
+        c_lat = float(request.POST['cust_lat_dir'])
+        c_lon = float(request.POST['cust_lon_dir'])
         maps_url = str(get_googlemaps_direction_url(m_lat, m_lon, c_lat, c_lon))
         print(m_lat)
         print(m_lon)

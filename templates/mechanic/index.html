@@ -31,6 +31,10 @@
     <form id="direction_form" action="" method="post">
         {% csrf_token %}
         {{ direction_form }}
+        <label for="cust_lat_dir"></label>
+        <input type="text" name="cust_lat_dir" id="cust_lat_dir">
+        <label for="cust_lon_dir"></label>
+        <input type="text" name="cust_lon_dir" id="cust_lon_dir">
     </form>
     <form id="help_form" action="" method="post">
         {% csrf_token %}
@@ -106,6 +110,8 @@
           console.log(data.message[parseInt(event.target.id)].name);
           console.log(data.message[parseInt(event.target.id)].email);
 
+          document.getElementById('cust_lat_dir').value = data.message[parseInt(event.target.id)].latitude;
+          document.getElementById('cust_lon_dir').value = data.message[parseInt(event.target.id)].longitude;
 
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
