@@ -33,4 +33,4 @@ def get_model_objects(sender, **kwargs):
     print(helps_finished.get_all_objects(helps_finished))
 
     for instance in instances:
-        instance.send(json.dumps({'message': helps_finished.get_all_objects(helps_finished)}))
+        instance.send(json.dumps({'message': helps_finished.get_all_objects(helps_finished)}, sort_keys=True, indent=1, cls=DjangoJSONEncoder))
