@@ -1,4 +1,5 @@
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 from .models import helps_finished
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
@@ -15,7 +16,7 @@ class WSConsumer(WebsocketConsumer):
 
         instances.append(self)
 
-        self.send(json.dumps({'message': helps_finished.get_all_objects(helps_finished)}))
+        self.send(json.dumps({'message': helps_finished.get_all_objects(helps_finished)}, sort_keys=True, indent=1, cls=DjangoJSONEncoder))
 
     def disconnect(self, close_code):
 
