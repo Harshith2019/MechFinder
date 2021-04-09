@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <title>MECHFINDER</title>
 
     <style>
@@ -152,6 +153,7 @@
       var socket = new WebSocket('ws://localhost:8000/ws/customer_helps_finished/');
       var data;
       var currentdate = new Date();
+      var max_elapse_time = 1;
       socket.onmessage = function(event) {
 
         data = JSON.parse(event.data);
@@ -161,11 +163,35 @@
         for (i = data.message.length-1; i >= 0; i--) {
 
           if(data.message[i].customer_name == "{{ userName }}") {
-            console.log('OMG! It\'s working fine');
-            console.log(data.message[i].created);
-            console.log(currentdate.getSeconds());
 
-            break;
+            var str = data.message[i].created;
+            var res = str.split("T");
+            var result = res[1].split(":");
+            var created_date_split = res[0].split("-");
+            var created_IST = moment().hour(result[0]).minute(result[1]).add(5,'hours').add(30, 'minutes').format("HH:mm");
+            var created_IST_split = created_IST.split(":");
+            var created_hours = parseInt(created_IST_split[0]);
+            var created_minutes = parseInt(created_IST_split[1]);
+            var created_year = parseInt(created_date_split[0]);
+            var created_month = parseInt(created_date_split[1]);
+            var created_date = parseInt(created_date_split[2]);
+
+            var current_year = currentdate.getFullYear();
+            var current_month = currentdate.getMonth() + 1;
+            var current_date = currentdate.getDate();
+            var current_hours = currentdate.getHours();
+            var current_minutes = currentdate.getMinutes();
+
+            if(created_year == current_year && created_month == current_month && created_date == current_date && created_hours == current_hours && (created_minutes + max_elapse_time) > current_minutes) {
+              console.log("Fuck Yes!");
+
+
+              // USE THIS AREA TO DO OPERATIONS FOR FEEDBACK
+
+
+              break;
+            }
+
           }
         }
 
