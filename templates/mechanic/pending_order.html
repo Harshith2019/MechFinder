@@ -30,6 +30,9 @@
     #cancel_order_form {
       display: none;
     }
+    #finish_order_form {
+      display: none;
+    }
   </style>
 
   </head>
@@ -42,6 +45,12 @@
         {% csrf_token %}
         {{ cancel_order_form }}
     </form>
+    <form id="finish_order_form" action="" method="post">
+        {% csrf_token %}
+        {{ finish_order_form }}
+        <label for="is_order_finished"></label>
+        <input type="text" name="is_order_finished" id="is_order_finished">
+    </form>
 
     <div class="container">
       <div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">
@@ -52,8 +61,8 @@
         <br>
         <p>+91 {{ pending_requests.customer_contact_no }}</p>
         <button type="button" id="cancel-btn" class="btn btn-outline-danger" onClick="cancel_order()" name="cancel_btnn">Cancel Order</button>
-        <button type="button" id="direction-btn" class="btn btn-outline-success" onClick="get_directions()" name="cancel_btnn">Get Live Directions</button>
-        <button type="button" id="finish-btn" class="btn btn-outline-danger" onClick="finish_order()" name="cancel_btnn">Finish Order</button>
+        <button type="button" id="direction-btn" class="btn btn-outline-success" onClick="get_directions()" name="directions_btn">Get Live Directions</button>
+        <button type="button" id="finish-btn" class="btn btn-outline-danger" onClick="finish_order()" name="finish_btn">Finish Order</button>
       </div>
     </div>
     <div class="container">
@@ -103,6 +112,24 @@
       document.getElementById('customer_longitude_CancelOrderForm').value = '{{ pending_requests.customer_longitude }}';
 
       document.getElementById('cancel_order_form').submit()
+    }
+
+    function finish_order()
+    {
+      document.getElementById('is_order_finished').value = 'YES';
+      document.getElementById('customer_name_FinishOrderForm').value = '{{ pending_requests.customer_name }}';
+      document.getElementById('mechanic_name_FinishOrderForm').value = '{{ pending_requests.mechanic_name }}';
+      document.getElementById('email_FinishOrderForm').value = '{{ pending_requests.email }}';
+      document.getElementById('customer_email_FinishOrderForm').value = '{{ pending_requests.customer_email }}';
+      document.getElementById('contact_no_FinishOrderForm').value = '{{ pending_requests.contact_no }}';
+      document.getElementById('customer_contact_no_FinishOrderForm').value = '{{ pending_requests.customer_contact_no }}';
+      document.getElementById('customer_description_FinishOrderForm').value = '{{ pending_requests.customer_description }}';
+      document.getElementById('latitude_FinishOrderForm').value = '{{ pending_requests.latitude }}';
+      document.getElementById('longitude_FinishOrderForm').value = '{{ pending_requests.longitude }}';
+      document.getElementById('customer_latitude_FinishOrderForm').value = '{{ pending_requests.customer_latitude }}';
+      document.getElementById('customer_longitude_FinishOrderForm').value = '{{ pending_requests.customer_longitude }}';
+
+      document.getElementById('finish_order_form').submit()
     }
 
 

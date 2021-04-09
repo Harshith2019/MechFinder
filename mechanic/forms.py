@@ -31,3 +31,17 @@ class CancelOrderForm(forms.Form):
     longitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'longitude_CancelOrderForm'}))
     customer_latitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_latitude_CancelOrderForm'}))
     customer_longitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_longitude_CancelOrderForm'}))
+
+class FinishOrderForm(forms.Form):
+    customer_name = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_name_FinishOrderForm'}))
+    mechanic_name = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'mechanic_name_FinishOrderForm'}))
+    email = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'email_FinishOrderForm'}))
+    customer_email = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_email_FinishOrderForm'}))
+    contact_no = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'contact_no_FinishOrderForm'}))
+    customer_contact_no = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_contact_no_FinishOrderForm'}))
+    customer_description = forms.CharField(label='', max_length=1000, widget= forms.TextInput(attrs={'id':'customer_description_FinishOrderForm'}))
+    latitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'latitude_FinishOrderForm'}))
+    longitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'longitude_FinishOrderForm'}))
+    customer_latitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_latitude_FinishOrderForm'}))
+    customer_longitude = forms.CharField(label='', max_length=100, widget= forms.TextInput(attrs={'id':'customer_longitude_FinishOrderForm'}))
+    

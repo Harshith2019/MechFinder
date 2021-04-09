@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import DirectionForm, HelpsReceivedForm, CancelOrderForm
+from .forms import DirectionForm, HelpsReceivedForm, CancelOrderForm, FinishOrderForm
 from .utils import get_googlemaps_direction_url
 from django.contrib.auth.models import User
 
 from home.models import UserProfile
 from customer.models import helps_received
-from .models import need_help
+from .models import need_help, helps_finished
 
 from django.contrib.auth.decorators import login_required
 import folium
@@ -96,6 +96,11 @@ def index(request):
 @login_required
 def pending_order(request):
     try:
+        is_order_finished = request.POST['is_order_finished']
+    except:
+        is_order_finished = 'NO'
+
+    try:
         user_obj = get_object_or_404(UserProfile, pk = request.user.id, user=request.user)
         if not user_obj.isMech:
             return redirect('/customer')
@@ -136,8 +141,8 @@ def pending_order(request):
 
     cancel_order_form = CancelOrderForm(request.POST or None)
 
-    if cancel_order_form.is_valid():
-        print(request.POST)
+    if cancel_order_form.is_valid() and not is_order_finished == 'YES':
+        print("---->  INSIDE CANCEL ORDER FORM")
 
 
         need_help_instance = need_help()
@@ -150,6 +155,25 @@ def pending_order(request):
         need_help_instance.longitude = request.POST['customer_longitude']
         need_help_instance.save()
 
+    finish_order_form = FinishOrderForm(request.POST or None)
+
+    if finish_order_form.is_valid() and is_order_finished == 'YES':
+
+        print("---->  INSIDE FINISH ORDER FORM")
+
+        helps_finished_instance = helps_finished()
+        helps_finished_instance.customer_name = request.POST['customer_name']
+        helps_finished_instance.mechanic_name = request.POST['mechanic_name']
+        helps_finished_instance.customer_email = request.POST['customer_email']
+        helps_finished_instance.email = request.POST['email']
+        helps_finished_instance.customer_description = request.POST['customer_description']
+        helps_finished_instance.customer_contact_no = request.POST['customer_contact_no']
+        helps_finished_instance.contact_no = request.POST['contact_no']
+        helps_finished_instance.customer_latitude = request.POST['customer_latitude']
+        helps_finished_instance.customer_longitude = request.POST['customer_longitude']
+        helps_finished_instance.latitude = request.POST['latitude']
+        helps_finished_instance.longitude = request.POST['longitude']
+        helps_finished_instance.save()
 
     try:
         customer_obj = helps_received.objects.filter(customer_name=request.POST['customer_name']).first()
@@ -164,7 +188,8 @@ def pending_order(request):
         'map': m,
         'direction_form': direction_form,
         'maps_url': maps_url,
-        'cancel_order_form': cancel_order_form
+        'cancel_order_form': cancel_order_form,
+        'finish_order_form': finish_order_form,
     }
 
     return render(request, 'mechanic/pending_order.html', context)
