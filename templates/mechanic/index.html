@@ -17,7 +17,6 @@
       #direction_form {
         display: none;
       }
-
       #help_form {
         display: none;
       }
@@ -32,6 +31,14 @@
     <form id="direction_form" action="" method="post">
         {% csrf_token %}
         {{ direction_form }}
+        <label for="cust_lat_dir"></label>
+        <input type="text" name="cust_lat_dir" id="cust_lat_dir">
+        <label for="cust_lon_dir"></label>
+        <input type="text" name="cust_lon_dir" id="cust_lon_dir">
+    </form>
+    <form id="help_form" action="" method="post">
+        {% csrf_token %}
+        {{ help_form }}
     </form>
 
     <form id="help_form" action="" method="post">
@@ -50,7 +57,7 @@
         var content = ""
         var i
         for (i = data.message.length-1; i >= 0; i--) {
-          content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + '<h5>' + data.message[i].name + " | " + data.message[i].email + '</h5>' + '<br>' + data.message[i].description + '<br>' + '+91 ' + data.message[i].contact_no + '<br><br><button style="margin-right: 7px; border-radius: 0;" type="button" class="btn btn-outline-success" onClick="accept_click()" id=' + i.toString() + '>Accept</button>' + '<button  style="margin-left: 7px; border-radius: 0;" type="button" class="btn btn-outline-success direction-button" onClick="directions_click()" id=' +  i.toString() + '>Get Directions</button>' + "</div>"
+          content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + '<h5>' + data.message[i].name + " | " + data.message[i].email + '</h5>' + data.message[i].description + '<br><br>' + '+91 ' + data.message[i].contact_no + '<br><br><button style="margin-right: 7px; border-radius: 0;" type="button" class="btn btn-outline-success" onClick="accept_click()" id=' + i.toString() + '>Accept</button>' + '<button  style="margin-left: 7px; border-radius: 0;" type="button" class="btn btn-outline-success direction-button" onClick="directions_click()" id=' +  i.toString() + '>Get Directions</button>' + "</div>"
         }
 
         document.querySelector('#dashboard').innerHTML = content;
@@ -68,11 +75,15 @@
           console.log(data.message[parseInt(event.target.id)].name);
           console.log(data.message[parseInt(event.target.id)].email);
 
-
           document.getElementById('customer_name_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].user_name;
           document.getElementById('mechanic_name_HelpsReceivedForm').value = "{{ userName }}";
           document.getElementById('email_HelpsReceivedForm').value = "{{ email }}";
+          document.getElementById('customer_email_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].email;
           document.getElementById('contact_no_HelpsReceivedForm').value = "{{ phone }}";
+          document.getElementById('customer_contact_no_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].contact_no;
+          document.getElementById('customer_description_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].description;
+          document.getElementById('customer_latitude_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].latitude;
+          document.getElementById('customer_longitude_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].longitude;
 
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
@@ -94,7 +105,6 @@
             document.getElementById("help_form").submit();
           }
 
-
       }
 
       function directions_click()
@@ -104,6 +114,8 @@
           console.log(data.message[parseInt(event.target.id)].name);
           console.log(data.message[parseInt(event.target.id)].email);
 
+          document.getElementById('cust_lat_dir').value = data.message[parseInt(event.target.id)].latitude;
+          document.getElementById('cust_lon_dir').value = data.message[parseInt(event.target.id)].longitude;
 
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
