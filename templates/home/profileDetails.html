@@ -1,10 +1,12 @@
 {% extends 'home/base.html' %}
 
-{% load static %}
+
 
 <!DOCTYPE html>
 
+{% load static %}
 
+{% block content %}
 <html>
 
 <head>
@@ -15,10 +17,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" crossorigin="anonymous">
 
-<style type="text/css">
+<style>
 
 body{
-  background-image: url('{% static "/home/i1.png" %}');
+  background-image: url("http://localhost:8000/static/home/i1.png");
+  height:100vh;
   background-color:#FDF2E9
 }
 
@@ -32,14 +35,12 @@ lable{
 
 </head>
 
-{% block content %}
+
 <body>
-
-
 
 <center>
 
-<img src="{% static '/home/profileimg.png' %}" width=150px>
+<img src="{% static '/home/profileimg.png' %}" class="rounded-circle mx-auto d-block" width=150px>
 
   <h4>{{ error }}</h4>
 <div class="container">
@@ -71,5 +72,6 @@ lable{
 
 
 </body>
-{% endblock %}
+
 </html>
+{% endblock %}

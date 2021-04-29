@@ -17,9 +17,14 @@
       #direction_form {
         display: none;
       }
+
+      #help_form {
+        display: none;
+      }
     </style>
   </head>
   <body onload="check_for_googlemaps()">
+
     <div class="container">
       <div id="dashboard"></div>
     </div>
@@ -28,6 +33,12 @@
         {% csrf_token %}
         {{ direction_form }}
     </form>
+
+    <form id="help_form" action="" method="post">
+        {% csrf_token %}
+        {{ help_form }}
+    </form>
+
 
     <script type="text/javascript">
       var socket = new WebSocket('ws://localhost:8000/ws/mechanic_dashboard_url/');
@@ -56,6 +67,34 @@
           console.log(event.target.id);
           console.log(data.message[parseInt(event.target.id)].name);
           console.log(data.message[parseInt(event.target.id)].email);
+
+
+          document.getElementById('customer_name_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].user_name;
+          document.getElementById('mechanic_name_HelpsReceivedForm').value = "{{ userName }}";
+          document.getElementById('email_HelpsReceivedForm').value = "{{ email }}";
+          document.getElementById('contact_no_HelpsReceivedForm').value = "{{ phone }}";
+
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          } else {
+              alert("Geolocation is not supported by this browser.");
+          }
+
+          function showPosition(position) {
+
+            lat = position.coords.latitude;
+            lat = lat.toString();
+            lon = position.coords.longitude;
+            lon = lon.toString();
+            console.log(lon);
+
+            document.getElementById('latitude_HelpsReceivedForm').value = lat;
+            document.getElementById('longitude_HelpsReceivedForm').value = lon;
+
+            document.getElementById("help_form").submit();
+          }
+
+
       }
 
       function directions_click()
