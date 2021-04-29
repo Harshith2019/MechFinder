@@ -51,12 +51,11 @@
   margin-top:15px;
   }
 
+
 @media only screen and (max-width: 600px) {
     .logo img{
      height:auto;
-     float:left;
-     width: 250px;
-     padding-top:20px;
+     width:260px !important;
     }
     #menuBtn {
       width:50px;
@@ -74,21 +73,26 @@
 <body>
 
 
+
 {% if user.is_authenticated %}
-<p>Logged in as {{ user.username }}</p>
-
-<h2><a href="{% url 'editProfile' %}">Edit Profile</a></h2>
-
 <form action="{% url 'logoutuser' %}" method="POST" id="logoutform">
   {% csrf_token %}
-<button  onclick="funclogout()">Logout</button>
 </form>
-
-
 {% endif %}
 
-
-
+{% ifnotequal request.path "/" %}
+<section id="homepage">
+  <div class="logo">
+  <img src="https://i.ibb.co/vYGwSqm/gifgit-2.png" style="width:340px;margin:20px;">
+  </div>
+</setion>
+{% else %}
+<section id="homepage">
+  <div class="logo">
+  <img src="https://i.ibb.co/vYGwSqm/gifgit-2.png">
+  </div>
+</setion>
+{% endifnotequal %}
 
 <!--NavBar-->
 
@@ -101,8 +105,8 @@
   <li><a href="{% url 'home' %}">HOME</a></li>
   {% endif %}
 
- <li><a href="#">ABOUT US</a></li>
- <li><a href="#">SERVICES</a></li>
+ <li><a href="{% url 'about' %}">ABOUT US</a></li>
+ <li><a href="{% url 'services' %}">SERVICES</a></li>
  <li><a href="#">CONTACT US</a></li>
  <li><a href="#">FAQ</a></li>
  {% if user.is_authenticated %}
@@ -115,7 +119,7 @@
 </div>
 
 <div id= "menuBtn">
-<img src="https://www.iconsdb.com/icons/preview/white/menu-4-xl.png"  id="MENUS">
+<img src="https://www.iconsdb.com/icons/preview/white/menu-4-xl.png"  id="menus">
 </div>
 
 
@@ -127,18 +131,18 @@
 
 var menuBtn = document.getElementById("menuBtn")
 var sideNav = document.getElementById("sideNav")
-var MENUS= document.getElementById("MENUS")
+var menus= document.getElementById("menus")
 
 sideNav.style.right="-250px";
 
  menuBtn.onclick = function(){
   if(sideNav.style.right == "-250px"){
       sideNav.style.right = "0px";
-      document.getElementById("MENUS").src = "https://www.iconsdb.com/icons/preview/white/x-mark-xxl.png";
+      document.getElementById("menus").src = "https://www.iconsdb.com/icons/preview/white/x-mark-xxl.png";
   }
   else{
      sideNav.style.right = "-250px";
-     document.getElementById("MENUS").src = "https://www.iconsdb.com/icons/preview/white/menu-4-xl.png";
+     document.getElementById("menus").src = "https://www.iconsdb.com/icons/preview/white/menu-4-xl.png";
      }
 }
 </script>

@@ -156,12 +156,9 @@
 </style>
 </head>
 
-
+{% if not user.is_authenticated %}
 <body>
 <section id="homepage">
-  <div class="logo">
-  <img src="https://i.ibb.co/vYGwSqm/gifgit-2.png">
-  </div>
   <div class="txt container">
     <div>
       <h1>Find a Mechanic</h1>
@@ -205,6 +202,7 @@
 
 
 </body>
+{% endif %}
 {% endblock %}
 </html>
 

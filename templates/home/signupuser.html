@@ -1,4 +1,7 @@
+{% extends 'home/base.html' %}
+
 <!DOCTYPE html>
+{% block content %}
 
 <html>
 
@@ -19,7 +22,8 @@ body{
 
 #error{
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
+  color:black !important;
 }
 
 #ques{
@@ -34,8 +38,7 @@ body{
   width: auto;
   background-color:#e6e6e6;
   padding:20px;
-  margin:20px;
-  width:auto;
+  margin: -10px 20px 20px 20px;
   border-radius:15px;
   color:white;
   font-size:15px;
@@ -46,7 +49,7 @@ body{
 }
 
 #hr-id{
-  width:1160px;
+  width:400px;
   height:.5px;
   background-color:orange;
   border-style: inset;
@@ -55,7 +58,6 @@ body{
 #signinbtn a{
   color:orange;
   text-decoration:none;
-
 }
 
 #signinbtn a:hover{
@@ -109,9 +111,9 @@ lable{
 <center>
 
 <div class="container" id="formdiv">
-  <h1><span style="color:#904F02; font-family:Apple Chancery, cursive" class="text-default"><b>Sign Up</b></span></h1>
+  <h1><span style="color:#904F02; font-family:Apple Chancery, cursive" class="text-default"><b style="margin:10px;">Sign Up</b></span></h1>
   <p></p>
-  <p class="text-danger" id="error"><i>{{ error }}</i></p>
+  <p id="error"><i>{{ error }}</i></p>
 <form method="POST" action="">
   {% csrf_token %}
   <p><lable>Username : {{ form1.username }}</lable></p>
@@ -141,7 +143,9 @@ lable{
 </form>
 </div>
 <hr id="hr-id">
+<div style="margin-bottom:30px">
 <h2 id="signinbtn"><span id="ques">Already have an account ? </span><a href="{% url 'loginuser' %}"> Sign In</a></h2>
+</div>
 </center>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
@@ -152,3 +156,5 @@ lable{
 </body>
 
 </html>
+
+{% endblock %}
