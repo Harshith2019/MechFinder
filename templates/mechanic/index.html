@@ -17,6 +17,7 @@
       #direction_form {
         display: none;
       }
+
       #help_form {
         display: none;
       }
@@ -32,10 +33,12 @@
         {% csrf_token %}
         {{ direction_form }}
     </form>
+
     <form id="help_form" action="" method="post">
         {% csrf_token %}
         {{ help_form }}
     </form>
+
 
     <script type="text/javascript">
       var socket = new WebSocket('ws://localhost:8000/ws/mechanic_dashboard_url/');
@@ -65,6 +68,7 @@
           console.log(data.message[parseInt(event.target.id)].name);
           console.log(data.message[parseInt(event.target.id)].email);
 
+
           document.getElementById('customer_name_HelpsReceivedForm').value = data.message[parseInt(event.target.id)].user_name;
           document.getElementById('mechanic_name_HelpsReceivedForm').value = "{{ userName }}";
           document.getElementById('email_HelpsReceivedForm').value = "{{ email }}";
@@ -89,7 +93,6 @@
 
             document.getElementById("help_form").submit();
           }
-
 
 
       }

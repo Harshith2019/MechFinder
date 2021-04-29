@@ -10,6 +10,7 @@ class Location(models.Model):
     def __str__(self):
         return f"{self.latitude},{self.longitude}"
 
+
 class helps_received(models.Model):
     customer_name = models.CharField(max_length=200)
     mechanic_name = models.CharField(max_length=200)
@@ -27,3 +28,4 @@ class helps_received(models.Model):
         # can use the below method also
         # queryset = self.__class__.objects.all()
         return list(queryset)
+
