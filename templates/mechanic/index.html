@@ -41,6 +41,12 @@
         {{ help_form }}
     </form>
 
+    <form id="help_form" action="" method="post">
+        {% csrf_token %}
+        {{ help_form }}
+    </form>
+
+
     <script type="text/javascript">
       var socket = new WebSocket('ws://localhost:8000/ws/mechanic_dashboard_url/');
       var data;
@@ -98,8 +104,6 @@
 
             document.getElementById("help_form").submit();
           }
-
-
 
       }
 

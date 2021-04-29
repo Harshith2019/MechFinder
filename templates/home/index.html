@@ -1,5 +1,9 @@
+{% extends 'home/base.html' %}
+
+
 <!Doctype Html>
 <html>
+{% block content %}
 <head>
 <title>MECHFINDER </title>
 <meta charset="utf-8">
@@ -149,19 +153,16 @@
 
 }
 
-
-
 </style>
 </head>
+
+{% if not user.is_authenticated %}
 <body>
 <section id="homepage">
-  <div class="logo">
-  <img src="https://i.ibb.co/vYGwSqm/gifgit-2.png">
-  </div>
   <div class="txt container">
     <div>
       <h1>Find a Mechanic</h1>
-      <p>Now,Anytime,Any where</p>
+      <p>At Anytime, Anywhere</p>
     </div>
     <div class="login_signup_btns">
       <a href="{% url 'signupuser' %}"><button class="btn btn-outline-light btn-lg mr-5" name="get_started_btn">Get Started</button></a>
@@ -200,9 +201,15 @@
 
 
 
+</body>
+{% endif %}
+{% endblock %}
+</html>
+
+
 
 <!--NavBar-->
-
+<!--
 <div id="sideNav">
 <nav>
 <ul>
@@ -215,6 +222,7 @@
 </ul>
 </nav>
 </div>
+
 <div id= "menuBtn">
 <img src="https://www.iconsdb.com/icons/preview/white/menu-4-xl.png"  id="MENUS">
 </div>
@@ -226,7 +234,7 @@ var MENUS= document.getElementById("MENUS")
 
 sideNav.style.right="-250px";
 
- menuBtn.onclick = function(){
+ MENUS.onclick = function(){
   if(sideNav.style.right == "-250px"){
       sideNav.style.right = "0px";
       document.getElementById("MENUS").src = "https://www.iconsdb.com/icons/preview/white/x-mark-xxl.png";
@@ -237,6 +245,4 @@ sideNav.style.right="-250px";
      }
 }
 </script>
-
-</body>
-</html>
+-->

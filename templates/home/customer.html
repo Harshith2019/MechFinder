@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<h1>Welcome {{ username }}</h1>
+<h1>Welcome {{ username }}
+  {% if error %} ,{{ error }} {% endif %}</h1>
 
 <p>First Name : {{ name.firstname }}</p>
 
