@@ -66,29 +66,90 @@
 
 
     <script type="text/javascript">
+      //connecting the websockets
       var socket = new WebSocket('ws://localhost:8000/ws/mechanic_dashboard_url/');
       var data;
-      socket.onmessage = function(event) {
-        data = JSON.parse(event.data);
-        console.log(data);
 
-        var content = ""
-        var i
-        for (i = data.message.length-1; i >= 0; i--) {
-          content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + '<h5>' + data.message[i].name + " | " + data.message[i].email + '</h5>' + data.message[i].description + '<br><br>' + '+91 ' + data.message[i].contact_no + '<br><br><button style="margin-right: 7px; border-radius: 0;" type="button" class="btn btn-outline-success" onClick="accept_click()" id=' + i.toString() + '>Accept</button>' + '<button  style="margin-left: 7px; border-radius: 0;" type="button" class="btn btn-outline-success direction-button" onClick="directions_click()" id=' +  i.toString() + '>Get Directions</button>' + "</div>"
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+
+      function showPosition(position) {
+        mech_lat = position.coords.latitude;
+        mech_lon = position.coords.longitude;
+
+        window.socket.onmessage = function(event) {
+
+          window.data = JSON.parse(event.data);
+          console.log(data);
+
+          var content = ""
+          var i
+          var distance;
+          for (i = window.data.message.length-1; i >= 0; i--) {
+            distance = getDistance(mech_lat, mech_lon, window.data.message[i].latitude, window.data.message[i].longitude)
+            if(distance <= 50) {
+              content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + '<h5>' + window.data.message[i].name + " | " + window.data.message[i].email + '</h5>' + window.data.message[i].description + '<br><br>' + '+91 ' + window.data.message[i].contact_no + '<br><br><button style="margin-right: 7px; border-radius: 0;" type="button" class="btn btn-outline-success" onClick="accept_click()" id=' + i.toString() + '>Accept</button>' + '<button  style="margin-left: 7px; border-radius: 0;" type="button" class="btn btn-outline-success direction-button" onClick="directions_click()" id=' +  i.toString() + '>Get Directions</button>' + "</div>"
+            }
+          }
+          if(content != "") {
+            document.getElementById("caughtup_statement").style.display = 'none';
+          } else {
+            document.getElementById("caughtup_statement").style.display = 'block';
+          }
+          document.querySelector('#dashboard').innerHTML = content;
+
         }
-        if(content != "") {
-          document.getElementById("caughtup_statement").style.display = 'none';
-        } else {
-          document.getElementById("caughtup_statement").style.display = 'block';
+        window.socket.onclose = function(){
+          console.log('closed!');
+          //reconnect now
         }
-        document.querySelector('#dashboard').innerHTML = content;
 
       }
-      socket.onclose = function(){
-        console.log('closed!');
-        //reconnect now
+
+      function showError(error) {
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation."
+            break;
+          case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable."
+            break;
+          case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out."
+            break;
+          case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred."
+            break;
+        }
       }
+
+      //calculating distance between customer and mechanic
+      function getDistance(lat1, lon1, lat2, lon2)
+      {
+        var R = 6371; // km
+        var dLat = toRad(lat2-lat1);
+        var dLon = toRad(lon2-lon1);
+        var lat1 = toRad(lat1);
+        var lat2 = toRad(lat2);
+
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        return d;
+      }
+
+      // Converts numeric degrees to radians
+      function toRad(Value)
+      {
+          return Value * Math.PI / 180;
+      }
+
+
+
 
       function accept_click()
       {
@@ -164,6 +225,7 @@
         }
 
       }
+
 
       var wow = new WOW(
         {
