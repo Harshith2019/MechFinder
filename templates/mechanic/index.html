@@ -1,3 +1,7 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -20,9 +24,23 @@
       #help_form {
         display: none;
       }
+      #caughtup_statement {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        text-align: center;
+      }
     </style>
   </head>
   <body onload="check_for_googlemaps()">
+    <div class="shadow-lg p-3 mb-10 bg-white rounded wow animate__fadeIn">
+      <h5> Hi, {{fullname}}</h5>
+    </div>
+
+    <h1 id="caughtup_statement" > You're all Caught up! </h1>
 
     <div class="container">
       <div id="dashboard"></div>
@@ -59,7 +77,11 @@
         for (i = data.message.length-1; i >= 0; i--) {
           content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + '<h5>' + data.message[i].name + " | " + data.message[i].email + '</h5>' + data.message[i].description + '<br><br>' + '+91 ' + data.message[i].contact_no + '<br><br><button style="margin-right: 7px; border-radius: 0;" type="button" class="btn btn-outline-success" onClick="accept_click()" id=' + i.toString() + '>Accept</button>' + '<button  style="margin-left: 7px; border-radius: 0;" type="button" class="btn btn-outline-success direction-button" onClick="directions_click()" id=' +  i.toString() + '>Get Directions</button>' + "</div>"
         }
-
+        if(content != "") {
+          document.getElementById("caughtup_statement").style.display = 'none';
+        } else {
+          document.getElementById("caughtup_statement").style.display = 'block';
+        }
         document.querySelector('#dashboard').innerHTML = content;
 
       }
@@ -164,3 +186,5 @@
 
   </body>
 </html>
+
+{% endblock %}
