@@ -55,6 +55,7 @@ def contact(request):
             form = ContactModelForm()
     return render(request, 'home/contact.html', {'form': form})
 
+@login_required
 def feedback(request):
     form = FeedbackModelForm(request.POST)
     if request.method == 'POST':
