@@ -58,6 +58,7 @@ def index(request):
 
 
     name = get_object_or_404(UserProfile, pk = request.user.id, user=request.user)
+    fullname = get_object_or_404(UserProfile, pk = request.user.id, user=request.user).firstname + ' ' + get_object_or_404(UserProfile, pk = request.user.id, user=request.user).lastname
     email = get_object_or_404(UserProfile, pk = request.user.id, user=request.user).email
     phone = get_object_or_404(UserProfile, pk = request.user.id, user=request.user).phone
     userName = get_object_or_404(User, pk=request.user.id).username
@@ -83,6 +84,7 @@ def index(request):
 
     context = {
         'name': name,
+        'fullname': fullname,
         'userName': userName,
         'email': email,
         'phone': phone,
@@ -182,8 +184,9 @@ def pending_order(request):
     except:
         customer_obj = None
 
-
+    fullname = get_object_or_404(UserProfile, pk = request.user.id, user=request.user).firstname + ' ' + get_object_or_404(UserProfile, pk = request.user.id, user=request.user).lastname
     context = {
+        'fullname': fullname,
         'pending_requests': pending_requests,
         'map': m,
         'direction_form': direction_form,

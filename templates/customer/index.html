@@ -1,3 +1,7 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -37,16 +41,32 @@
       #cancel_request_form {
         display: none;
       }
+      #waiting_statement {
+        display: none;
+      }
     </style>
   </head>
   <body>
+    <div class="shadow-lg p-3 mb-10 bg-white rounded wow animate__fadeIn">
+      <h5> Hi, {{fullname}}</h5>
+    </div>
+
     <form id="cancel_request_form" action="" method="post">
       {% csrf_token %}
       <label for="cancel_request"></label>
       <input type="text" name="cancel_request" id="cancel_request">
     </form>
 
-    <div class="container">
+    <div style="margin-top:50px;"class="container">
+
+      <div>
+        <div id="customer_help"></div>
+      </div>
+
+      <div>
+        <h4 id="waiting_statement">wait till we find someone for you...      <img class='wow animate__pulse  animate__infinite' width='30' src='https://i.ibb.co/HKH4tyY/loupe.png'></h4>
+        <button style="display: {{ display_cancel_btn }}; margin-bottom:20px;" type="button" id="cancel-btn" class="btn btn-outline-danger" onClick="cancel_request()" name="cancel_btnn">Cancel Request</button>
+      </div>
 
       {{ map|safe }}
 
@@ -62,22 +82,18 @@
     <br>
     <br>
 
-    <div class="container">
-      <button style="display: {{ display_cancel_btn }}" type="button" id="cancel-btn" class="btn btn-outline-danger" onClick="cancel_request()" name="cancel_btnn">Cancel Request</button>
-    </div>
-
-    <div class="container">
-      <div id="customer_help"></div>
-    </div>
-
+    <br>
+    <br>
 
 
     <script type="text/javascript">
+
       var socket = new WebSocket('ws://localhost:8000/ws/customer_help_url/');
       var data;
       socket.onmessage = function(event) {
         {% if map %}
         document.getElementById("cancel-btn").style.display = 'block';
+        document.getElementById("waiting_statement").style.display = 'block';
         {% endif %}
 
         data = JSON.parse(event.data);
@@ -91,10 +107,18 @@
 
             content = content + '<div class="shadow-lg p-3 mb-5 bg-white rounded wow animate__fadeIn">' + '<h5>' + data.message[i].mechanic_name + " | " + data.message[i].email + '</h5>' + '<br>' + '<br>' + '+91 ' + data.message[i].contact_no  + "</div>"
             document.getElementById("cancel-btn").style.display = 'none';
+            document.getElementById("waiting_statement").style.display = 'none';
             break;
           } else {
             document.getElementById("cancel-btn").style.display = 'block';
+            document.getElementById("waiting_statement").style.display = 'block';
           }
+        }
+        if(content != "") {
+          content = "<h1>You're currently connected with,</h1>" + content;
+          document.getElementById("waiting_statement").style.display = 'none';
+        } else {
+
         }
 
         document.querySelector('#customer_help').innerHTML = content;
@@ -168,13 +192,21 @@
         var i
         for (i = data.message.length-1; i >= 0; i--) {
 
+
           if(data.message[i].customer_name == "{{ userName }}") {
+
+
 
             var str = data.message[i].created;
             var res = str.split("T");
             var result = res[1].split(":");
-            var created_date_split = res[0].split("-");
-            var created_IST = moment().hour(result[0]).minute(result[1]).add(5,'hours').add(30, 'minutes').format("HH:mm");
+
+            var gmtDateTime = moment.utc(res[0] + ' ' + res[1], "YYYY-MM-DD HH:mm")
+            var local = gmtDateTime.local().format('YYYY-MM-DD HH:mm');
+
+            var created_IST = local.split(' ')[1]
+            var created_date_split = local.split('-')
+
             var created_IST_split = created_IST.split(":");
             var created_hours = parseInt(created_IST_split[0]);
             var created_minutes = parseInt(created_IST_split[1]);
@@ -188,11 +220,13 @@
             var current_hours = currentdate.getHours();
             var current_minutes = currentdate.getMinutes();
 
+            //console.log(created_year, created_month, created_date, created_hours, created_minutes);
             if(created_year == current_year && created_month == current_month && created_date == current_date && created_hours == current_hours && (created_minutes + max_elapse_time) > current_minutes) {
-              console.log("Fuck Yes!");
+              console.log("Add Feedback!");
 
 
               // USE THIS AREA TO DO OPERATIONS FOR FEEDBACK
+              // TODO: Redirect to feedbackpage
 
 
               break;
@@ -210,3 +244,5 @@
     </script>
   </body>
 </html>
+
+{% endblock %}

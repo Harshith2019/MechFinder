@@ -1,3 +1,7 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -37,6 +41,10 @@
 
   </head>
   <body onload="check_for_googlemaps()">
+    <div style="margin-bottom:30px;" class="shadow-lg p-3 mb-10 bg-white rounded wow animate__fadeIn">
+      <h5> Hi, {{fullname}}! You've (1) Pending order(s) 🔔</h5>
+    </div>
+
     <form id="direction_form" action="" method="post">
         {% csrf_token %}
         {{ direction_form }}
@@ -155,3 +163,5 @@
 
   </body>
 </html>
+
+{% endblock %}

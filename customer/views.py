@@ -58,6 +58,7 @@ def index(request):
 
 
     name = get_object_or_404(UserProfile, pk = request.user.id, user=request.user)
+    fullname = get_object_or_404(UserProfile, pk = request.user.id, user=request.user).firstname + ' ' + get_object_or_404(UserProfile, pk = request.user.id, user=request.user).lastname
     email = get_object_or_404(UserProfile, pk = request.user.id, user=request.user).email
     phone = get_object_or_404(UserProfile, pk = request.user.id, user=request.user).phone
     userName = get_object_or_404(User, pk=request.user.id).username
@@ -146,6 +147,7 @@ def index(request):
             m = m._repr_html_()
 
         context = {
+            'fullname': fullname,
             'name': name,
             'userName': userName,
             'email': email,
@@ -154,11 +156,13 @@ def index(request):
             'ask_help_form': ask_help_form,
             'map': m,
             'display_lat_lon_form': 'none',
-            'display_cancel_btn': display_cancel_btn
+            'display_cancel_btn': display_cancel_btn,
+            'display_waiting_statement': 'block',
         }
 
     else:
         context = {
+            'fullname': fullname,
             'name': name,
             'userName': userName,
             'email': email,
@@ -166,7 +170,8 @@ def index(request):
             'form': form,
             'ask_help_form': ask_help_form,
             'display_lat_lon_form': 'block',
-            'display_cancel_btn': display_cancel_btn
+            'display_cancel_btn': display_cancel_btn,
+            'display_waiting_statement': 'none',
         }
 
     return render(request, 'customer/index.html', context)
