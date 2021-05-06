@@ -108,7 +108,7 @@
  <li><a href="{% url 'about' %}">ABOUT US</a></li>
  <li><a href="{% url 'services' %}">SERVICES</a></li>
  <li><a href="#">CONTACT US</a></li>
- <li><a href="#">FAQ</a></li>
+ <li><a href="{% url 'faqs' %}">FAQ</a></li>
  {% if user.is_authenticated %}
  <li><a href="#" id="logout" onclick="funclogout()">LOGOUT</a></li>
  {% else %}

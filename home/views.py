@@ -28,6 +28,9 @@ def services(request):
 def about(request):
     return render(request, 'home/about.html')
 
+def faqs(request):
+    return render(request, 'home/faqs.html')
+
 @login_required
 def customer(request, error='error'):
     name = get_object_or_404(UserProfile, pk = request.user.id, user=request.user)
@@ -75,6 +78,10 @@ def signupuser(request):
 
 
 def loginuser(request):
+    if (request.user.is_authenticated):
+        print(request.user)
+        return redirect('customer')
+
     if request.method == 'GET':
         return render(request, 'home/loginuser.html', {'form':AuthenticationForm()})
     else:
