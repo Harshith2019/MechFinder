@@ -202,7 +202,7 @@
             var result = res[1].split(":");
 
             var gmtDateTime = moment.utc(res[0] + ' ' + res[1], "YYYY-MM-DD HH:mm")
-            var local = gmtDateTime.local().format('YYYY-MM-DD h:mm A');
+            var local = gmtDateTime.local().format('YYYY-MM-DD HH:mm');
 
             var created_IST = local.split(' ')[1]
             var created_date_split = local.split('-')
