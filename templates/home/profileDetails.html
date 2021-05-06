@@ -20,15 +20,25 @@
 <style>
 
 body{
-  background-image: url("http://localhost:8000/static/home/i1.png");
   height:100vh;
-  background-color:#FDF2E9
+  background-image:linear-gradient(to bottom right, pink, blue);
+  background-size:cover;
+  background-repeat:no-repeat;
+  font-family: "Comic Sans";
 }
 
 lable{
   width:400px;
   display:inline-block;
-  text-align:left;
+  text-align:right;
+}
+
+#maindiv{
+  background-color:#fcf5ee;
+  padding:50px;
+  width:auto;
+  border-radius:50%;
+  opacity:0.88;
 }
 
 </style>
@@ -39,7 +49,7 @@ lable{
 <body>
 
 <center>
-
+<div class='container' id="maindiv">
 <img src="{% static '/home/profileimg.png' %}" class="rounded-circle mx-auto d-block" width=150px>
 
   <h4>{{ error }}</h4>
@@ -48,22 +58,23 @@ lable{
 <h1 style="color:brown"><b><i>Profile</i></b></h1>
 <div style="font-size:20px">
   <h4>Username : {{ username }}</h4>
+  <h4>Email Id : {{ email }}</h4>
   <form method="POST" action="">
     {% csrf_token %}
 
-
     <p><lable>First name : {{ form.firstname }}</lable></p>
     <p><lable>Last name : {{ form.lastname }}</lable></p>
-    <p><lable>Email id : {{ form.email }}</lable></p>
     <p><lable>Phone Number : {{ form.phone }}</lable></p>
 
-    <button type="submit">Save Changes</button>
+    <button class="btn btn-info" type="submit">Save Changes</button>
   </form>
 </div>
 
+</div>
+</div>
 </center>
 
-</div>
+
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>

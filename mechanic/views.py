@@ -3,7 +3,7 @@ from .forms import DirectionForm, HelpsReceivedForm, CancelOrderForm, FinishOrde
 from .utils import get_googlemaps_direction_url
 from django.contrib.auth.models import User
 
-from home.models import UserProfile
+from home.models import UserProfile, Feedback
 from customer.models import helps_received
 from .models import need_help, helps_finished
 
@@ -81,8 +81,17 @@ def index(request):
         print(c_lon)
         print(maps_url)
 
+    feedbacks = Feedback.objects.all().filter(mechanic_name=request.user.username)
+    count = Feedback.objects.all().filter(mechanic_name=request.user.username).count()
+    avg_rating = 0.0
+    if count > 0:
+        for i in range(count):
+            avg_rating += float(feedbacks[i].rating)
+        avg_rating = avg_rating/count
+
 
     context = {
+        'avg_rating': avg_rating,
         'name': name,
         'fullname': fullname,
         'userName': userName,

@@ -2,12 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 
 from home.models import UserProfile
-from mechanic.models import need_help
+from mechanic.models import need_help, helps_finished
 from .models import Location, helps_received
 
 from django.contrib.auth.decorators import login_required
-from .forms import LocationModelForm, AskHelpForm
+from .forms import LocationModelForm, AskHelpForm, GetDetailsForFeedback
 import folium
+
+from home.forms import FeedbackModelForm
+from home.models import Feedback
 
 # Create your views here.
 
@@ -19,6 +22,34 @@ def index(request):
             return redirect('/mechanic')
     except:
         return redirect('/customer')
+
+    # Getting Feedback from customer
+    if request.method == 'POST':
+        try:
+            if request.POST['is_feedback'] == "YES":
+                feedback_details = request.POST
+                feedback = Feedback()
+                feedback.customer_name = feedback_details['customer_name']
+                feedback.mechanic_name = feedback_details['mechanic_name']
+                feedback.email = feedback_details['email']
+                feedback.customer_email = feedback_details['customer_email']
+                feedback.contact_no = feedback_details['contact_no']
+                feedback.customer_contact_no = feedback_details['customer_contact_no']
+                # md5 hash for babydevs: f6181436f8f6cd84ea56293b424a53c8
+                feedback.message = "f6181436f8f6cd84ea56293b424a53c8"
+                feedback.save()
+
+                # updating as the feedback is given
+                hf_count = helps_finished.objects.filter(customer_name=feedback_details['customer_name'], mechanic_name=feedback_details['mechanic_name'], is_feedback_given=False).count()
+                if hf_count > 0:
+                    hf = hf_count = helps_finished.objects.filter(customer_name=feedback_details['customer_name'], mechanic_name=feedback_details['mechanic_name'], is_feedback_given=False).first()
+                    hf.is_feedback_given = True
+                    hf.save()
+
+
+                return redirect('/feedback')
+        except:
+            pass
 
     if request.method == 'POST':
         try:
@@ -64,6 +95,7 @@ def index(request):
     userName = get_object_or_404(User, pk=request.user.id).username
     form = LocationModelForm(request.POST or None)
     ask_help_form = AskHelpForm(request.POST or None)
+    get_details_for_feedback = GetDetailsForFeedback(request.POST or None)
 
 
     # initial values
@@ -154,6 +186,7 @@ def index(request):
             'phone': phone,
             'form': form,
             'ask_help_form': ask_help_form,
+            'get_details_for_feedback': get_details_for_feedback,
             'map': m,
             'display_lat_lon_form': 'none',
             'display_cancel_btn': display_cancel_btn,
@@ -169,6 +202,7 @@ def index(request):
             'phone': phone,
             'form': form,
             'ask_help_form': ask_help_form,
+            'get_details_for_feedback': get_details_for_feedback,
             'display_lat_lon_form': 'block',
             'display_cancel_btn': display_cancel_btn,
             'display_waiting_statement': 'none',

@@ -94,12 +94,19 @@
 </setion>
 {% endifnotequal %}
 
+{% if user.isMech %}
+<p>5</p>
+{% endif %}
+
 <!--NavBar-->
 
 <div id="sideNav">
 <nav>
 <ul>
+
+
   {% if user.is_authenticated %}
+  <li><a href="{% url 'home' %}">DASH BOARD</a></li>
   <li><a href="{% url 'editProfile' %}">EDIT PROFILE</a></li>
   {% else %}
   <li><a href="{% url 'home' %}">HOME</a></li>
@@ -107,7 +114,7 @@
 
  <li><a href="{% url 'about' %}">ABOUT US</a></li>
  <li><a href="{% url 'services' %}">SERVICES</a></li>
- <li><a href="#">CONTACT US</a></li>
+ <li><a href="{% url 'contact' %}">CONTACT US</a></li>
  <li><a href="{% url 'faqs' %}">FAQ</a></li>
  {% if user.is_authenticated %}
  <li><a href="#" id="logout" onclick="funclogout()">LOGOUT</a></li>
