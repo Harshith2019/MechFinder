@@ -45,6 +45,14 @@ def index(request):
         helps_received_instance.longitude = request.POST['longitude']
         helps_received_instance.customer_latitude = request.POST['customer_latitude']
         helps_received_instance.customer_longitude = request.POST['customer_longitude']
+        feedbacks = Feedback.objects.all().filter(mechanic_name=request.user.username)
+        count = Feedback.objects.all().filter(mechanic_name=request.user.username).count()
+        avg_rating = 0.0
+        if count > 0:
+            for i in range(count):
+                avg_rating += float(feedbacks[i].rating)
+            avg_rating = avg_rating/count
+        helps_received_instance.avg_rating = avg_rating
         helps_received_instance.save()
 
         # incase the customer was able to give more than one request, delete remaing too
