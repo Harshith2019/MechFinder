@@ -3,17 +3,18 @@ from .forms import DirectionForm, HelpsReceivedForm, CancelOrderForm, FinishOrde
 from .utils import get_googlemaps_direction_url
 from django.contrib.auth.models import User
 
-from home.models import UserProfile
+from home.models import UserProfile, Feedback
 from customer.models import helps_received
 from .models import need_help, helps_finished
 
 from django.contrib.auth.decorators import login_required
 import folium
 
-# Create your views here.
+
 
 @login_required
 def index(request):
+    """redirecting non-authorized users to their respective pages"""
     try:
         user_obj = get_object_or_404(UserProfile, pk = request.user.id, user=request.user)
         if not user_obj.isMech:
@@ -21,18 +22,18 @@ def index(request):
     except:
         return redirect('/mechanic')
 
+    """restricing access to visit dashboard before completion of the current order"""
     try:
         pending_requests = helps_received.objects.get(mechanic_name=get_object_or_404(User, pk=request.user.id).username)
         return redirect('pending_order/')
-        print('------>   Having pending orders!')
+
     except:
         pending_requests = None
-        print('------>   No pending orders!')
 
     direction_form = DirectionForm(request.POST or None)
 
     if request.method == 'POST' and not direction_form.is_valid():
-        print(request.POST)
+        """saving the request  information in the helps_receivedmodel is the request is being accepted"""
         helps_received_instance = helps_received()
         helps_received_instance.customer_name = request.POST['customer_name']
         helps_received_instance.mechanic_name = request.POST['mechanic_name']
@@ -45,9 +46,18 @@ def index(request):
         helps_received_instance.longitude = request.POST['longitude']
         helps_received_instance.customer_latitude = request.POST['customer_latitude']
         helps_received_instance.customer_longitude = request.POST['customer_longitude']
+        feedbacks = Feedback.objects.all().filter(mechanic_name=request.user.username)
+        count = Feedback.objects.all().filter(mechanic_name=request.user.username).count()
+        avg_rating = 0.0
+        """getting the average rating of the mechanic"""
+        if count > 0:
+            for i in range(count):
+                avg_rating += float(feedbacks[i].rating)
+            avg_rating = avg_rating/count
+        helps_received_instance.avg_rating = avg_rating
         helps_received_instance.save()
 
-        # incase the customer was able to give more than one request, delete remaing too
+        """incase the customer was able to give more than one request, delete remaing too"""
         request_obj_count = need_help.objects.filter(user_name=request.POST['customer_name']).count()
         if request_obj_count > 0:
             for i in range(0, request_obj_count):
@@ -70,19 +80,22 @@ def index(request):
     if direction_form.is_valid():
         m_lat = float(direction_form.cleaned_data.get('m_lat'))
         m_lon = float(direction_form.cleaned_data.get('m_lon'))
-        # c_lat = float(direction_form.cleaned_data.get('c_lat'))
-        # c_lon = float(direction_form.cleaned_data.get('c_lon'))
         c_lat = float(request.POST['cust_lat_dir'])
         c_lon = float(request.POST['cust_lon_dir'])
         maps_url = str(get_googlemaps_direction_url(m_lat, m_lon, c_lat, c_lon))
-        print(m_lat)
-        print(m_lon)
-        print(c_lat)
-        print(c_lon)
-        print(maps_url)
+
+    feedbacks = Feedback.objects.all().filter(mechanic_name=request.user.username)
+    count = Feedback.objects.all().filter(mechanic_name=request.user.username).count()
+    avg_rating = 0.0
+    """getting the average rating of the mechanic"""
+    if count > 0:
+        for i in range(count):
+            avg_rating += float(feedbacks[i].rating)
+        avg_rating = avg_rating/count
 
 
     context = {
+        'avg_rating': avg_rating,
         'name': name,
         'fullname': fullname,
         'userName': userName,
@@ -97,11 +110,13 @@ def index(request):
 
 @login_required
 def pending_order(request):
+    """checking whether the order is finished yet"""
     try:
         is_order_finished = request.POST['is_order_finished']
     except:
         is_order_finished = 'NO'
 
+    """redirecting non-authorized users to their respective pages"""
     try:
         user_obj = get_object_or_404(UserProfile, pk = request.user.id, user=request.user)
         if not user_obj.isMech:
@@ -109,12 +124,14 @@ def pending_order(request):
     except:
         return redirect('/mechanic')
 
+    """checking if any pending order exists and redirecting accordingly"""
     try:
         pending_requests = helps_received.objects.get(mechanic_name=get_object_or_404(User, pk=request.user.id).username)
     except:
         pending_requests = None
         return redirect('/mechanic')
 
+    """Folium Map for mechanic's reference of customer's location"""
     m = None
     maps_url = None
 
@@ -144,9 +161,8 @@ def pending_order(request):
     cancel_order_form = CancelOrderForm(request.POST or None)
 
     if cancel_order_form.is_valid() and not is_order_finished == 'YES':
-        print("---->  INSIDE CANCEL ORDER FORM")
 
-
+        """updating the need_help and helps_recieved model if the order is being cancelled"""
         need_help_instance = need_help()
         need_help_instance.name = request.POST['customer_name']
         need_help_instance.user_name = request.POST['customer_name']
@@ -161,7 +177,7 @@ def pending_order(request):
 
     if finish_order_form.is_valid() and is_order_finished == 'YES':
 
-        print("---->  INSIDE FINISH ORDER FORM")
+        """updating the helps_recieved model if the order is being finished"""
 
         helps_finished_instance = helps_finished()
         helps_finished_instance.customer_name = request.POST['customer_name']

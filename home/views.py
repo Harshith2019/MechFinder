@@ -1,8 +1,8 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .forms import UserProfileForm
+from .forms import UserProfileForm, ContactModelForm, FeedbackModelForm
 from django.contrib.auth.models import User, AnonymousUser
-from .models import UserProfile
+from .models import UserProfile, Feedback
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from django.utils import timezone
@@ -10,6 +10,13 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
+from django.shortcuts import render
+from django.http import HttpResponse
+from .forms import ContactModelForm
+from .forms import FeedbackModelForm
+from django.contrib import messages
+from django.shortcuts import redirect
+# from django.views.generic import FormView
 
 def home(request):
     if (request.user.is_authenticated):
@@ -30,6 +37,46 @@ def about(request):
 
 def faqs(request):
     return render(request, 'home/faqs.html')
+
+#def contact(request):
+#    return  render(request, 'home/contact.html')
+
+def contact(request):
+    form = ContactModelForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            #messages.add_message(request,messages.SUCCESS,'Thank you for Contacting us.')
+            # After the operation was successful,
+            # redirect to some other page
+            #return redirect('/submitted/')
+            return redirect('/')
+        else:
+            form = ContactModelForm()
+    return render(request, 'home/contact.html', {'form': form})
+
+@login_required
+def feedback(request):
+    form = FeedbackModelForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+
+            # md5 hash for babydevs: f6181436f8f6cd84ea56293b424a53c8
+            feedback_count = Feedback.objects.filter(customer_name=request.user.username, message="f6181436f8f6cd84ea56293b424a53c8").count()
+            if feedback_count > 0:
+                feedback = Feedback.objects.filter(customer_name=request.user.username, message="f6181436f8f6cd84ea56293b424a53c8").first()
+                feedback.message = request.POST['message']
+                feedback.rating = request.POST['rating']
+                feedback.save()
+
+            #messages.add_message(request,messages.SUCCESS,'Thank you for your feedback.')
+            return redirect('/')
+        else:
+            form = FeedbackModelForm()
+
+    return render(request, 'home/feedback.html', {'form': form})
+
+
 
 @login_required
 def customer(request, error='error'):
@@ -102,10 +149,11 @@ def logoutuser(request):
 def editProfile(request):
     profile = get_object_or_404(UserProfile, pk=request.user.id, user=request.user)
     userName = get_object_or_404(User, pk=request.user.id).username
+    email = get_object_or_404(UserProfile, pk=request.user.id, user=request.user).email
 
     if request.method == "GET":
         form = UserProfileForm(instance=profile)
-        return render(request, 'home/profileDetails.html', {'form':form, 'username':userName})
+        return render(request, 'home/profileDetails.html', {'form':form, 'username':userName, 'email':email})
     else:
         try:
             form = UserProfileForm(request.POST, instance=profile)
@@ -113,7 +161,7 @@ def editProfile(request):
             return redirect('customer')
         except ValueError:
             #return render(request, 'todo/tododetail.html', {'form':TodoCreateForm(instance=form), 'error':'Bad input! Try again.'})
-            return render(request, 'home/profileDetails.html', {'form':form, 'username':userName, 'error':'Bad input! Try again.'})
+            return render(request, 'home/profileDetails.html', {'form':form, 'email':email, 'username':userName, 'error':'Bad input! Try again.'})
         except:
             #return render(request, 'todo/tododetail.html', {'form':TodoCreateForm(instance=form), 'error':'Bad input! Try again.'})
-            return render(request, 'home/profileDetails.html', {'form':form, 'username':userName, 'error':'Something went wrong! Try again'})
+            return render(request, 'home/profileDetails.html', {'form':form, 'email':email, 'username':userName, 'error':'Something went wrong! Try again'})
